@@ -1,7 +1,6 @@
 <template>
   <card title="Tasks">
-    <!-- <form @submit.prevent="register" @keydown="form.onKeydown($event)"> -->
-    <form>
+    <form @submit.prevent="createTask" @keydown="form.onKeydown($event)">
       <!-- Title -->
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-md-right">Title</label>
@@ -44,6 +43,7 @@
 <script>
 import Form from "vform";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
   middleware: "auth",
@@ -55,15 +55,21 @@ export default {
     })
   }),
 
-  created: async function() {
+  async created() {
     this.tasks = await axios.get("/api/task").then(response => {
       return response.data;
     });
   },
 
   methods: {
-    isDone: function(task) {
-      return task.done == 1;
+    async createTask() {
+      await this.form.post("/api/task");
+      notie.alert({
+        type: "success",
+        text: "Successfully created task!",
+        position: "bottom",
+        time: 2
+      });
     }
   }
 };

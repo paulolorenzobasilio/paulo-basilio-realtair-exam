@@ -18,6 +18,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/user', 'Auth\UserController@current');
     Route::get('/task', 'TaskController@index');
+    Route::post('/task', 'TaskController@store');
+    Route::delete('/task/{id}', 'TaskController@destroy');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
