@@ -1,15 +1,15 @@
 <template>
-  <card :title="$t('home')">
-    {{ $t('you_are_logged_in') }}
-  </card>
+  <card title="Home">Welcome {{ user.first_name }}!</card>
 </template>
 
 <script>
-export default {
-  middleware: 'auth',
+import { mapGetters } from "vuex";
 
-  metaInfo () {
-    return { title: this.$t('home') }
-  }
-}
+export default {
+  middleware: "auth",
+
+  computed: mapGetters({
+    user: 'auth/user'
+  })
+};
 </script>
