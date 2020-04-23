@@ -22,7 +22,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return response()->json($this->task->all());
+        return response()->json(Auth::user()->tasks);
     }
 
     /**
