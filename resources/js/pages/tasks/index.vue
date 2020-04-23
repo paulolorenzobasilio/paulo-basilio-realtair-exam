@@ -19,8 +19,12 @@
           <td>
             <div class="btn-group">
               <template v-if="!isDone(task)">
-                <button type="button" class="btn btn-primary" @click="markTaskAsDone(task.id)">Done?</button>
-                <button type="button" class="btn btn-secondary">Update</button>
+                <button type="button" class="btn btn-primary" @click="markAsDone(task.id)">Done?</button>
+                <router-link
+                  :to="{ name: 'tasks.show', params: {id: task.id} }"
+                  role="button"
+                  class="btn btn-secondary"
+                >Update</router-link>
               </template>
               <button type="button" class="btn btn-danger" @click="deleteTask(task.id)">Delete</button>
             </div>
@@ -53,28 +57,25 @@ export default {
   }),
 
   async created() {
-    this.tasks = await axios.get("/api/task").then(response => {
-      return response.data;
-    });
+    this.tasks = await axios.get("/api/task").then(response => response.data);
   },
 
   methods: {
     isDone(task) {
       return task.done == 1;
     },
-    async markTaskAsDone(id){
-      alert('task done');
+
+    async markAsDone(id) {
+      await axios.put(`/api/task/${id}/done`);
+
+      let task = this.tasks.find(task => task.id === id);
+      task.done = true;
     },
+
     async deleteTask(id) {
       await axios.delete(`/api/task/${id}`);
-      this.tasks = this.tasks.filter(task => task.id !== id);
       
-      notie.alert({
-        type: 'success',
-        text: 'Successfully delete task',
-        time: 2,
-        position: 'bottom'
-      });
+      this.tasks = this.tasks.filter(task => task.id !== id);
     }
   }
 };

@@ -14,5 +14,6 @@ export default [
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/tasks', name: 'tasks', component: page('tasks/index.vue')},
   { path: '/tasks/form', name: 'tasks.form', component: page('tasks/form.vue')},
+  { path: '/tasks/form/:id', name: 'tasks.show', component: page('tasks/form.vue')},
   { path: '*', component: page('errors/404.vue') }
 ]

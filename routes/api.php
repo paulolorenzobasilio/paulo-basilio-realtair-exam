@@ -17,9 +17,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', 'Auth\LoginController@logout');
 
     Route::get('/user', 'Auth\UserController@current');
+
     Route::get('/task', 'TaskController@index');
+    Route::get('/task/{id}', 'TaskController@show');
     Route::post('/task', 'TaskController@store');
     Route::delete('/task/{id}', 'TaskController@destroy');
+    Route::put('/task/{id}', 'TaskController@update');
+    Route::put('/task/{id}/done', 'TaskController@markAsDone');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

@@ -1,6 +1,6 @@
 <template>
-  <card title="Tasks">
-    <form @submit.prevent="createTask" @keydown="form.onKeydown($event)">
+  <card :title="isUpdateTask ? `Update Task`  : 'Create Task'">
+    <form @submit.prevent="createOrUpdateTask" @keydown="form.onKeydown($event)">
       <!-- Title -->
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-md-right">Title</label>
@@ -32,7 +32,7 @@
 
       <div class="form-group row">
         <div class="col-md-7 offset-md-3 d-flex">
-          <v-button :loading="form.busy" class="mr-2">Create</v-button>
+          <v-button :loading="form.busy" class="mr-2" v-html="isUpdateTask ? 'Update' : 'Create'"></v-button>
           <router-link :to="{ name: 'tasks'}" role="button" class="btn btn-secondary">Cancel</router-link>
         </div>
       </div>
@@ -52,24 +52,57 @@ export default {
     form: new Form({
       title: "",
       description: ""
-    })
+    }),
+    isUpdateTask: false,
+    taskId: undefined
   }),
 
   async created() {
-    this.tasks = await axios.get("/api/task").then(response => {
-      return response.data;
-    });
+    this.showFormDataIfUpdate();
   },
 
   methods: {
+    async createOrUpdateTask() {
+      if(this.isUpdateTask) {
+        this.updateTask();
+        return;
+      }
+      this.createTask();
+    },
+
     async createTask() {
       await this.form.post("/api/task");
+
       notie.alert({
         type: "success",
         text: "Successfully created task!",
-        position: "bottom",
-        time: 2
       });
+
+      await this.form.reset();
+    },
+
+    async updateTask() {
+      await this.form.put(`/api/task/${this.taskId}`);
+      
+      notie.alert({
+        type: 'success',
+        text: 'Successfully updated task!',
+      });
+    },
+
+    async showFormDataIfUpdate() {
+      if (this.$route.params.id) {
+        this.isUpdateTask = true;
+      
+        this.taskId = this.$route.params.id;
+        const { title: title, description: description } = await axios
+          .get(`/api/task/${this.taskId}`)
+          .then(response => response.data);
+
+        // populate the form data
+        this.form.title = title;
+        this.form.description = description;
+      }
     }
   }
 };

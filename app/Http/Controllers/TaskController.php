@@ -33,13 +33,11 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required'
-        ]);
-        
+        $this->taskValidator($request);
+
         $data = $request->only(['title', 'description']);
         $data['user_id'] = Auth::user()->id;
+        
         $this->task->create($data);
 
         return response()->json(null, 201);
@@ -53,7 +51,9 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+        $task = $this->task->findOrFail($id);
+        
+        return response()->json($task);
     }
 
     /**
@@ -65,7 +65,12 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->taskValidator($request);
+
+        $task = $this->task->findOrFail($id);
+        $task->update($request->only('title', 'description'));
+
+        return response()->json(null, 204);
     }
 
     /**
@@ -80,5 +85,20 @@ class TaskController extends Controller
         $task->delete();
 
         return response()->json(null, 200);
+    }
+
+    public function markAsDone($id){
+        $task = $this->task->findOrFail($id);
+        $task->done = true;
+        $task->save();
+
+        return response()->json(null, 200);
+    }
+
+    private function taskValidator($request){
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required'
+        ]);
     }
 }

@@ -1,6 +1,5 @@
 import './axios'
 import './fontawesome'
+import './notie'
 import 'bootstrap'
 
-import notie from 'notie'
-window.notie = notie
