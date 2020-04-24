@@ -14,8 +14,8 @@ What things you need to install the software and how to install them
 
 ### Installing
 1. Clone the project
-`git clone git@github.com:paulolorenzobasilio/realtair-exam.git`
-2. `cd realtair-exam`
+`git clone git@github.com:paulolorenzobasilio/paulo-basilio-realtair-exam.git
+2. `cd paulo-basilio-realtair-exam`
 3. Copy environment details
 `mv .env.example .env`
 4. `composer install`
